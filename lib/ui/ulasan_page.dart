@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 
-class UlasanPage extends StatelessWidget {
+class UlasanPage extends StatefulWidget {
+  const UlasanPage({Key? key}) : super(key: key);
+
+  @override
+  _UlasanPageState createState() => _UlasanPageState();
+}
+
+class _UlasanPageState extends State<UlasanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ulasan Page'),
+        title: const Text('Ulasan'),
       ),
       body: Center(
-        child: Text('Welcome to Ulasan Page!'),
+        child: const Text('Ini adalah halaman ulasan'),
       ),
     );
   }
