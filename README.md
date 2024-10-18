@@ -1,8 +1,8 @@
-# Aplikasi Manajemen Pariwisata
+# Aplikasi Manajemen Pariwisata bagian Ulasan
 
-Berikut adalah tampilan halaman-halaman utama dari aplikasi:
+Berikut adalah tampilan halaman-halaman utama dari bagian ulasan :
 
-### 1. Ulasan Page
+### 1. Halaman Ulasan
 <img src="assets/img/ulasan_page.png" alt="Ulasan Page" width="300">
 
 ### 2. Registrasi
