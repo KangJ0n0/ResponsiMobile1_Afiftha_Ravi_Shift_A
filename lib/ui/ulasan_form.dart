@@ -28,6 +28,14 @@ class _UlasanFormState extends State<UlasanForm> {
     isUpdate();
   }
 
+  @override
+  void dispose() {
+    _reviewerTextboxController.dispose();
+    _ratingTextboxController.dispose();
+    _commentsTextboxController.dispose();
+    super.dispose();
+  }
+
   isUpdate() {
     if (widget.ulasan != null) {
       setState(() {
@@ -46,7 +54,10 @@ class _UlasanFormState extends State<UlasanForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(judul)),
+      appBar: AppBar(
+        title: Text(judul),
+        backgroundColor: Colors.grey[900],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -63,104 +74,167 @@ class _UlasanFormState extends State<UlasanForm> {
           ),
         ),
       ),
+      backgroundColor: Colors.grey[850],
     );
   }
 
-  // Reviewer TextField
   Widget _reviewerTextField() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: "Reviewer"),
+      decoration: InputDecoration(
+        labelText: "Reviewer",
+        labelStyle: TextStyle(color: Colors.grey[300]),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey[600]!),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+      ),
       keyboardType: TextInputType.text,
       controller: _reviewerTextboxController,
       validator: (value) {
-        if (value!.isEmpty) {
+        if (value == null || value.isEmpty) {
           return "Reviewer harus diisi";
         }
         return null;
       },
+      style: TextStyle(color: Colors.grey[300]),
     );
   }
 
-  // Rating TextField
   Widget _ratingTextField() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: "Rating (1-5)"),
+      decoration: InputDecoration(
+        labelText: "Rating (1-5)",
+        labelStyle: TextStyle(color: Colors.grey[300]),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey[600]!),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+      ),
       keyboardType: TextInputType.number,
       controller: _ratingTextboxController,
       validator: (value) {
-        if (value!.isEmpty || int.tryParse(value) == null || int.parse(value) < 1 || int.parse(value) > 5) {
+        if (value == null ||
+            value.isEmpty ||
+            int.tryParse(value) == null ||
+            int.parse(value) < 1 ||
+            int.parse(value) > 5) {
           return "Rating harus diisi dan bernilai antara 1-5";
         }
         return null;
       },
+      style: TextStyle(color: Colors.grey[300]),
     );
   }
 
-  // Comments TextField
   Widget _commentsTextField() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: "Comments"),
+      decoration: InputDecoration(
+        labelText: "Comments",
+        labelStyle: TextStyle(color: Colors.grey[300]),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey[600]!),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+      ),
       keyboardType: TextInputType.text,
       controller: _commentsTextboxController,
       validator: (value) {
-        if (value!.isEmpty) {
+        if (value == null || value.isEmpty) {
           return "Comments harus diisi";
         }
         return null;
       },
+      style: TextStyle(color: Colors.grey[300]),
     );
   }
 
-  // Submit/Update Button
   Widget _buttonSubmit() {
     return OutlinedButton(
-      child: Text(tombolSubmit),
-      onPressed: () {
-        var validate = _formKey.currentState!.validate();
-        if (validate) {
-          if (!_isLoading) {
-            if (widget.ulasan != null) {
-              // Update review
-              ubah();
-            } else {
-              // Create new review
-              simpan();
-            }
-          }
-        }
-      },
+      child: _isLoading
+          ? CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[300]!),
+            )
+          : Text(
+              tombolSubmit,
+              style: TextStyle(color: Colors.grey[300]),
+            ),
+      onPressed: _isLoading
+          ? null
+          : () {
+              var validate = _formKey.currentState!.validate();
+              if (validate) {
+                if (!_isLoading) {
+                  if (widget.ulasan != null) {
+                    ubah(); // Update review
+                  } else {
+                    simpan(); // Create new review
+                  }
+                }
+              }
+            },
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(color: Colors.grey[300]!),
+      ),
     );
   }
 
-  // Save a new review
-  simpan() {
+  void simpan() {
+    // Validate input fields
+    if (_reviewerTextboxController.text.isEmpty ||
+        _ratingTextboxController.text.isEmpty ||
+        _commentsTextboxController.text.isEmpty) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => const WarningDialog(
+                description: "Semua bidang harus diisi",
+              ));
+      return;
+    }
+
+    int? rating;
+    try {
+      rating = int.parse(_ratingTextboxController.text);
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => const WarningDialog(
+                description: "Rating harus berupa angka",
+              ));
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
 
     Ulasan newUlasan = Ulasan(id: null);
     newUlasan.reviewer = _reviewerTextboxController.text;
-    newUlasan.rating = int.parse(_ratingTextboxController.text);
+    newUlasan.rating = rating;
     newUlasan.comments = _commentsTextboxController.text;
 
     UlasanBloc.addUlasan(ulasan: newUlasan).then((value) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => const UlasanPage()));
-    }, onError: (error) {
+    }).catchError((error, stackTrace) {
       showDialog(
           context: context,
           builder: (BuildContext context) => const WarningDialog(
-            description: "Simpan gagal, silahkan coba lagi",
-          ));
-    });
-
-    setState(() {
-      _isLoading = false;
+                description: "Simpan gagal, silahkan coba lagi",
+              ));
+    }).whenComplete(() {
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
-  // Update an existing review
-  ubah() {
+  void ubah() {
     setState(() {
       _isLoading = true;
     });
@@ -173,16 +247,16 @@ class _UlasanFormState extends State<UlasanForm> {
     UlasanBloc.updateUlasan(ulasan: updatedUlasan).then((value) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => const UlasanPage()));
-    }, onError: (error) {
+    }).catchError((error) {
       showDialog(
           context: context,
           builder: (BuildContext context) => const WarningDialog(
-            description: "Permintaan ubah data gagal, silahkan coba lagi",
-          ));
-    });
-
-    setState(() {
-      _isLoading = false;
+                description: "Permintaan ubah data gagal, silahkan coba lagi",
+              ));
+    }).whenComplete(() {
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 }

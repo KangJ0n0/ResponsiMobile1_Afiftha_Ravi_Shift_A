@@ -19,7 +19,8 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Registrasi"),
+        title: const Text("Halaman Registrasi"),
+        backgroundColor: Colors.grey[800],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -30,7 +31,7 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                    'Silahkan registrasi terlebih dahulu untuk mendaftarkan diri ke Aplikasi Manajemen Riwayat Alergi',
+                    'Silahkan registrasi terlebih dahulu untuk mendaftarkan diri ke Aplikasi Manajemen Ulasan Pariwisata',
                     style: Theme.of(context).textTheme.bodyMedium),
                 _namaTextField(),
                 _emailTextField(),
@@ -125,7 +126,11 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
           if (validate) {
             if (!_isLoading) _submit();
           }
-        });
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.grey[600], // Dark gray button color
+          foregroundColor: Colors.white, // White text color for button
+        ));
   }
 
   void _submit() {
@@ -134,26 +139,26 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
       _isLoading = true;
     });
     RegistrasiBloc.registrasi(
-        nama: _namaTextboxController.text,
-        email: _emailTextboxController.text,
-        password: _passwordTextboxController.text)
+            nama: _namaTextboxController.text,
+            email: _emailTextboxController.text,
+            password: _passwordTextboxController.text)
         .then((value) {
       showDialog(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) => SuccessDialog(
-            description: "Registrasi berhasil, silahkan login",
-            okClick: () {
-              Navigator.pop(context);
-            },
-          ));
+                description: "Registrasi berhasil, silahkan login",
+                okClick: () {
+                  Navigator.pop(context);
+                },
+              ));
     }, onError: (error) {
       showDialog(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) => const WarningDialog(
-            description: "Registrasi gagal, silahkan coba lagi",
-          ));
+                description: "Registrasi gagal, silahkan coba lagi",
+              ));
     });
   }
 }

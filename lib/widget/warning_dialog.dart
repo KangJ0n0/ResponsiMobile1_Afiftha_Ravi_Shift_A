@@ -7,10 +7,12 @@ class Consts {
 }
 
 class WarningDialog extends StatelessWidget {
-  final String? description;
+  final String description; // Make description non-nullable
   final VoidCallback? okClick;
-  const WarningDialog({Key? key, this.description, this.okClick})
+
+  const WarningDialog({Key? key, required this.description, this.okClick})
       : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -32,14 +34,14 @@ class WarningDialog extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(top: Consts.avatarRadius),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.red[50], // Light red background
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(Consts.padding),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Colors.black26,
+            color: Colors.red[200]!, // Light red shadow
             blurRadius: 10.0,
-            offset: Offset(0.0, 10.0),
+            offset: const Offset(0.0, 10.0),
           ),
         ],
       ),
@@ -47,29 +49,36 @@ class WarningDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
-            "GAGAL",
+            "WARNING",
             style: TextStyle(
                 fontSize: 24.0, fontWeight: FontWeight.w700, color: Colors.red),
           ),
           const SizedBox(height: 16.0),
           Text(
-            description!,
+            description, // No need for null assertion
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 16.0,
+              color: Colors.red, // Red text
             ),
           ),
           const SizedBox(height: 24.0),
           Align(
             alignment: Alignment.bottomRight,
-            child: ElevatedButton(
+            child: OutlinedButton(
               onPressed: () {
                 Navigator.of(context).pop();
-// To close the dialog
+                okClick?.call(); // Use null-aware operator
               },
-              child: const Text("OK"),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.red), // Red border
+              ),
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.red), // Red text
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

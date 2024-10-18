@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:manajemenpariwisata/bloc/logout_bloc.dart';
 import 'package:manajemenpariwisata/bloc/ulasan_bloc.dart';
 import 'package:manajemenpariwisata/models/ulasan.dart';
-import 'package:manajemenpariwisata/ui/ulasan_form.dart'; // Form to create/update ulasan
-import 'package:manajemenpariwisata/ui/ulasan_detail.dart'; // Ulasan detail page
+import 'package:manajemenpariwisata/ui/ulasan_form.dart';
+import 'package:manajemenpariwisata/ui/ulasan_detail.dart';
+import 'package:manajemenpariwisata/ui/login_page.dart';
 
 class UlasanPage extends StatefulWidget {
   const UlasanPage({Key? key}) : super(key: key);
@@ -17,6 +19,7 @@ class _UlasanPageState extends State<UlasanPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('List Ulasan'),
+        backgroundColor: Colors.grey[800],
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
@@ -37,7 +40,11 @@ class _UlasanPageState extends State<UlasanPage> {
               title: const Text('Logout'),
               trailing: const Icon(Icons.logout),
               onTap: () async {
-                // Implement your logout logic here
+                await LogoutBloc.logout().then((value) => {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          (route) => false)
+                    });
               },
             )
           ],
@@ -93,7 +100,8 @@ class ItemUlasan extends StatelessWidget {
       child: Card(
         child: ListTile(
           title: Text(ulasan.reviewer!),
-          subtitle: Text('Rating: ${ulasan.rating} \nComments: ${ulasan.comments}'),
+          subtitle:
+              Text('Rating: ${ulasan.rating} \nComments: ${ulasan.comments}'),
         ),
       ),
     );

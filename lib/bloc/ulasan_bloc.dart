@@ -8,39 +8,46 @@ class UlasanBloc {
   static Future<List<Ulasan>> getUlasans() async {
     String apiUrl = ApiUrl.listUlasan;
     var response = await Api().get(apiUrl);
-    var jsonObj = json.decode(response.body);
-    List<dynamic> listUlasan = (jsonObj as Map<String, dynamic>)['data'];
-    List<Ulasan> ulasans = [];
-    for (int i = 0; i < listUlasan.length; i++) {
-      ulasans.add(Ulasan.fromJson(listUlasan[i]));
+
+    if (response.statusCode == 200) { // Check if the response is successful
+      var jsonObj = json.decode(response.body);
+      List<dynamic> listUlasan = (jsonObj as Map<String, dynamic>)['data'];
+      List<Ulasan> ulasans = [];
+      for (var item in listUlasan) { // Using for-in loop for better readability
+        ulasans.add(Ulasan.fromJson(item));
+      }
+      return ulasans;
+    } else {
+      throw Exception('Failed to load ulasans'); // Handle errors
     }
-    return ulasans;
   }
 
   // Adding a new review (Ulasan)
-  static Future addUlasan({Ulasan? ulasan}) async {
+  static Future<bool> addUlasan({required Ulasan ulasan}) async {
     String apiUrl = ApiUrl.createUlasan;
     var body = {
-      "reviewer": ulasan!.reviewer,
-      "rating": ulasan.rating.toString(),
+      "reviewer": ulasan.reviewer,
+      "rating": ulasan.rating,
       "comments": ulasan.comments,
     };
+
     var response = await Api().post(apiUrl, body);
     var jsonObj = json.decode(response.body);
-    return jsonObj['status'];
+    return jsonObj['status'] == true; // Assuming the status is a boolean
   }
 
   // Updating an existing review (Ulasan)
-  static Future updateUlasan({required Ulasan ulasan}) async {
-    String apiUrl = ApiUrl.updateUlasan((ulasan.id!));
+  static Future<bool> updateUlasan({required Ulasan ulasan}) async {
+    String apiUrl = ApiUrl.updateUlasan(ulasan.id!);
     var body = {
       "reviewer": ulasan.reviewer,
-      "rating": ulasan.rating.toString(),
+      "rating": ulasan.rating,
       "comments": ulasan.comments,
     };
+
     var response = await Api().put(apiUrl, jsonEncode(body));
     var jsonObj = json.decode(response.body);
-    return jsonObj['status'];
+    return jsonObj['status'] == true; // Assuming the status is a boolean
   }
 
   // Deleting a review (Ulasan)
@@ -48,6 +55,6 @@ class UlasanBloc {
     String apiUrl = ApiUrl.deleteUlasan(id);
     var response = await Api().delete(apiUrl);
     var jsonObj = json.decode(response.body);
-    return (jsonObj as Map<String, dynamic>)['status'];
+    return jsonObj['status'] == true; // Assuming the status is a boolean
   }
 }

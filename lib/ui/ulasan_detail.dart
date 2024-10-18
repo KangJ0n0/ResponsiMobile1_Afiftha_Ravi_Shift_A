@@ -20,6 +20,7 @@ class _UlasanDetailState extends State<UlasanDetail> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Ulasan'),
+        backgroundColor: Colors.grey[800],
       ),
       body: Center(
         child: Column(
@@ -40,6 +41,7 @@ class _UlasanDetailState extends State<UlasanDetail> {
           ],
         ),
       ),
+      backgroundColor: Colors.grey[100],
     );
   }
 
@@ -50,6 +52,10 @@ class _UlasanDetailState extends State<UlasanDetail> {
 // Tombol Edit
         OutlinedButton(
           child: const Text("EDIT"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey[600], // Dark gray button color
+            foregroundColor: Colors.white, // White text color for button
+          ),
           onPressed: () {
             Navigator.push(
               context,
@@ -65,6 +71,10 @@ class _UlasanDetailState extends State<UlasanDetail> {
 // Tombol Hapus
         OutlinedButton(
           child: const Text("DELETE"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey[600], // Dark gray button color
+            foregroundColor: Colors.white, // White text color for button
+          ),
           onPressed: () => confirmHapus(),
         ),
       ],
@@ -73,32 +83,45 @@ class _UlasanDetailState extends State<UlasanDetail> {
 
   void confirmHapus() {
     AlertDialog alertDialog = AlertDialog(
-      content: const Text("Yakin ingin menghapus data ini?"),
+      backgroundColor: Colors.grey[800],
+      content: const Text(
+        "Yakin ingin menghapus data ini?",
+        style: TextStyle(color: Colors.grey),
+      ),
       actions: [
-//tombol hapus
+        // tombol hapus
         OutlinedButton(
-          child: const Text("Ya"),
+          child: const Text(
+            "Ya",
+            style: TextStyle(color: Colors.red),
+          ),
           onPressed: () {
-            UlasanBloc.deleteUlasan(id:(widget.ulasan!.id!))
-                .then(
-                    (value) => {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const UlasanPage()))
-                }, onError: (error) {
+            UlasanBloc.deleteUlasan(id: (widget.ulasan!.id!)).then(
+                (value) => {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const UlasanPage()))
+                    }, onError: (error) {
               showDialog(
                   context: context,
                   builder: (BuildContext context) => const WarningDialog(
-                    description: "Hapus gagal, silahkan coba lagi",
-                  ));
+                        description: "Hapus gagal, silahkan coba lagi",
+                      ));
             });
           },
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: Colors.red),
+          ),
         ),
-
-//tombol batal
         OutlinedButton(
-          child: const Text("Batal"),
+          child: const Text(
+            "Batal",
+            style: TextStyle(color: Color.fromARGB(255, 141, 81, 81)),
+          ),
           onPressed: () => Navigator.pop(context),
-        )
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: Colors.grey[300]!),
+          ),
+        ),
       ],
     );
     showDialog(builder: (context) => alertDialog, context: context);

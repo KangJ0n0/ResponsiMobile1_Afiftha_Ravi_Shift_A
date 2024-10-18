@@ -32,14 +32,14 @@ class SuccessDialog extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(top: Consts.avatarRadius),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.green[50], // Light green background
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(Consts.padding),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Colors.black26,
+            color: Colors.green[200]!, // Light green shadow
             blurRadius: 10.0,
-            offset: Offset(0.0, 10.0),
+            offset: const Offset(0.0, 10.0),
           ),
         ],
       ),
@@ -59,6 +59,7 @@ class SuccessDialog extends StatelessWidget {
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 16.0,
+              color: Colors.green, // Green text
             ),
           ),
           const SizedBox(height: 24.0),
@@ -67,10 +68,15 @@ class SuccessDialog extends StatelessWidget {
             child: OutlinedButton(
               onPressed: () {
                 Navigator.of(context).pop();
-// To close the dialog
                 okClick!();
               },
-              child: const Text("OK"),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.green), // Green border
+              ),
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.green), // Green text
+              ),
             ),
           )
         ],

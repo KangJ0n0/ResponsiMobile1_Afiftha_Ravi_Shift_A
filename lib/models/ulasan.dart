@@ -1,14 +1,14 @@
 class Ulasan {
-  int? id; // Change to int
+  int? id;
   String? reviewer;
-  int? rating; // Keep as int since rating is Integer
+  int? rating;
   String? comments;
 
   Ulasan({this.id, this.reviewer, this.rating, this.comments});
 
   factory Ulasan.fromJson(Map<String, dynamic> json) {
     return Ulasan(
-      id: json['id'], // No change needed here
+      id: json['id'],
       reviewer: json['reviewer'],
       rating: json['rating'],
       comments: json['comments'],

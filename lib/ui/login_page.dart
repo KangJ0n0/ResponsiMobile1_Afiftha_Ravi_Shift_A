@@ -5,8 +5,6 @@ import 'package:manajemenpariwisata/ui/ulasan_page.dart';
 import 'package:manajemenpariwisata/ui/registrasi_page.dart';
 import 'package:manajemenpariwisata/widget/warning_dialog.dart';
 
-
-
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
   @override
@@ -18,30 +16,37 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   final _emailTextboxController = TextEditingController();
   final _passwordTextboxController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Text(
-                    'Silahkan login terlebih dahulu untuk masuk ke Aplikasi Manajemen Riwayat Alergi',
-                    style: Theme.of(context).textTheme.bodyMedium),
-                _emailTextField(),
-                _passwordTextField(),
-                _buttonLogin(),
-                const SizedBox(
-                  height: 30,
-                ),
-                _menuRegistrasi()
-              ],
+    return Container(
+      color: Colors.grey[200],
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Halaman Login'),
+          backgroundColor: Colors.grey[800],
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Text(
+                    'Silahkan login terlebih dahulu untuk masuk ke Aplikasi Manajemen Ulasan Pariwisata',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Colors.black), // Black text
+                  ),
+                  _emailTextField(),
+                  _passwordTextField(),
+                  _buttonLogin(),
+                  const SizedBox(height: 30),
+                  _menuRegistrasi(),
+                ],
+              ),
             ),
           ),
         ),
@@ -49,14 +54,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-//Membuat Textbox email
+  //Membuat Textbox email
   Widget _emailTextField() {
     return TextFormField(
       decoration: const InputDecoration(labelText: "Email"),
       keyboardType: TextInputType.emailAddress,
       controller: _emailTextboxController,
       validator: (value) {
-//validasi harus diisi
+        //validasi harus diisi
         if (value!.isEmpty) {
           return 'Email harus diisi';
         }
@@ -65,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-//Membuat Textbox password
+  //Membuat Textbox password
   Widget _passwordTextField() {
     return TextFormField(
       decoration: const InputDecoration(labelText: "Password"),
@@ -73,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
       obscureText: true,
       controller: _passwordTextboxController,
       validator: (value) {
-//jika karakter yang dimasukkan kurang dari 6 karakter
+        //jika karakter yang dimasukkan kurang dari 6 karakter
         if (value!.isEmpty) {
           return "Password harus diisi";
         }
@@ -82,16 +87,21 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-//Membuat Tombol Login
+  //Membuat Tombol Login
   Widget _buttonLogin() {
     return ElevatedButton(
-        child: const Text("Login"),
-        onPressed: () {
-          var validate = _formKey.currentState!.validate();
-          if (validate) {
-            if (!_isLoading) _submit();
-          }
-        });
+      child: const Text("Login"),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.grey[600], // Dark gray button color
+        foregroundColor: Colors.white, // White text color for button
+      ),
+      onPressed: () {
+        var validate = _formKey.currentState!.validate();
+        if (validate) {
+          if (!_isLoading) _submit();
+        }
+      },
+    );
   }
 
   void _submit() {
@@ -101,45 +111,50 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     LoginBloc.login(
-        email: _emailTextboxController.text,
-        password: _passwordTextboxController.text)
-        .then((value) async {
+      email: _emailTextboxController.text,
+      password: _passwordTextboxController.text,
+    ).then((value) async {
       if (value.code == 200) {
         await UserInfo().setToken(value.token.toString());
         await UserInfo().setUserID(int.parse(value.userID.toString()));
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const UlasanPage()));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const UlasanPage()),
+        );
       } else {
         showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) => const WarningDialog(
-              description: "Login gagal, silahkan coba lagi",
-            ));
-      }
-    }, onError: (error) {
-      print(error);
-      showDialog(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) => const WarningDialog(
             description: "Login gagal, silahkan coba lagi",
-          ));
+          ),
+        );
+      }
+    }, onError: (error) {
+      print(error);
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => const WarningDialog(
+          description: "Login gagal, silahkan coba lagi",
+        ),
+      );
     });
-
-// Membuat menu untuk membuka halaman registrasi
   }
 
+  // Membuat menu untuk membuka halaman registrasi
   Widget _menuRegistrasi() {
     return Center(
       child: InkWell(
         child: const Text(
           "Registrasi",
-          style: TextStyle(color: Colors.blue),
+          style: TextStyle(color: Color.fromARGB(255, 55, 61, 73)),
         ),
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const RegistrasiPage()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const RegistrasiPage()),
+          );
         },
       ),
     );
