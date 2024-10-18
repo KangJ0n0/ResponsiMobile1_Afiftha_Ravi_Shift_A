@@ -3,7 +3,6 @@ import 'package:manajemenpariwisata/bloc/login_bloc.dart';
 import 'package:manajemenpariwisata/helpers/user_info.dart';
 import 'package:manajemenpariwisata/ui/ulasan_page.dart';
 import 'package:manajemenpariwisata/ui/registrasi_page.dart';
-import 'package:manajemenpariwisata/widget/success_dialog.dart';
 import 'package:manajemenpariwisata/widget/warning_dialog.dart';
 
 
